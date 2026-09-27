@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block content %}
+{% if mapping_note %}
+<div class="card" style="padding:14px 20px; background:#eef5ff; border-color:#c9dcff">
+  <span class="muted" style="font-size:13px">🔧 {{ mapping_note }}</span>
+</div>
+{% endif %}
+
+<div class="card">
+  <h1>{{ merchant.name }}</h1>
+  <p class="muted">{{ s.period_start }} to {{ s.period_end }} ({{ s.days_covered }} days) ·
+    policy: {{ s.policy_id }}</p>
+  {% if merchant.p2pm_is_user_assumption %}
+  <p class="muted" style="font-size:12.5px">P2PM eligibility assumption: you told us
+    {{ "yes" if merchant.qr_settles_directly_to_account else "no" }} to "does your account
+    qualify for small-merchant (P2PM) treatment?" - this is self-reported input used for
+    calculation, not a legal or regulatory determination of your actual status.</p>
+  {% endif %}
+
+  <p style="margin-top:14px; font-size:15.5px; line-height:1.6">{{ summary_text }}</p>
+
+  <div class="grid cols-3" style="margin-top:18px">
+    <div class="stat">
+      <div class="n">{{ s.transactions_total }}</div>
+      <div class="l">total transactions ({{ s.transactions_upi }} were UPI)</div>
+    </div>
+    <div class="stat">
+      <div class="n">{{ s.transactions_affected }}</div>
+      <div class="l">affected ({{ s.pct_affected }}% of total)</div>
+    </div>
+    <div class="stat">
+      <div class="n">{{ inr(s.avg_mdr_per_affected) }}</div>
+      <div class="l">average MDR per affected transaction</div>
+    </div>
+    <div class="stat">
+      <div class="n">{{ inr(s.estimated_mdr_in_period) }}</div>
+      <div class="l">{{ s.period_metric_label }}</div>
+    </div>
+    <div class="stat">
+      <div class="n">{{ inr(s.estimated_mdr_annualized) }}</div>
+      <div class="l">projected annual exposure</div>
+    </div>
+    <div class="stat">
+      <div class="n">{{ s.exempt_count }}</div>
+      <div class="l">exempt ({{ s.pct_exempt }}%){% if s.top_exempt_reason %} - mostly {{ s.top_exempt_reason.rule_name|lower }}{% endif %}</div>
+    </div>
+  </div>
+
+  <p class="banner" style="margin-top:16px">{{ s.timing_note }}</p>
+</div>
+
+<div class="card" style="background:#fafbfe">
+  <h2 style="font-size:14.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em">
+    As of today (respecting the calendar)</h2>
+  <div class="grid cols-3" style="margin-top:10px">
+    <div class="stat">
+      <div class="n">{{ s_actual.transactions_affected }}</div>
+      <div class="l">actually charged so far</div>
+    </div>
+    <div class="stat">
+      <div class="n">{{ inr(s_actual.estimated_mdr_in_period) }}</div>
+      <div class="l">{{ s_actual.period_metric_label }}</div>
+    </div>
+    <div class="stat">
+      <div class="n">{{ rules.effective_date }}</div>
+      <div class="l">policy effective date</div>
+    </div>
+  </div>
+  <p class="muted" style="font-size:12.5px; margin-top:10px">{{ s_actual.timing_note }}</p>
+</div>
+
+<div class="card">
+  <h2>Detailed rule breakdown</h2>
+  <p class="muted" style="font-size:13px">Every transaction is decided by exactly one rule below - click "see transactions" on any row to inspect individual cases, or a transaction ID for its
+    full calculation trace.</p>
+  <table>
+    <tr><th>Rule</th><th>Outcome</th><th>Transactions</th><th>MDR</th><th></th></tr>
+    {% for r in s.by_rule %}
+    <tr>
+      <td><b>{{ r.rule_id }}</b> {{ r.rule_name }}</td>
+      <td>
+        {% if r.outcome == 'not_affected' %}<span class="pill not_affected">not affected</span>
+        {% elif r.outcome == 'unsupported' %}<span class="pill unsupported">flagged - check manually</span>
+        {% else %}<span class="pill affected">affected</span>{% endif %}
+      </td>
+      <td>{{ r.transactions }}</td>
+      <td>{{ inr(r.mdr) }}</td>
+      <td><a class="rowlink" onclick="showTop('{{ r.rule_id }}')">see transactions</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="grid cols-2">
+  <div class="card">
+    <h2>Most affected categories</h2>
+    <table>
+      <tr><th>Category</th><th>Txns</th><th>MDR</th></tr>
+      {% for c in s.by_category[:8] %}
+      <tr><td>{{ c.category }}</td><td>{{ c.affected_txns }}</td><td>{{ inr(c.mdr) }}</td></tr>
+      {% else %}
+      <tr><td colspan="3" class="muted">No affected transactions in this dataset.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="card">
+    <h2>Top affected products</h2>
+    <table>
+      <tr><th>Product</th><th>Txns</th><th>MDR</th></tr>
+      {% for p in s.top_products[:8] %}
+      <tr><td>{{ p.product }}</td><td>{{ p.affected_txns }}</td><td>{{ inr(p.mdr) }}</td></tr>
+      {% else %}
+      <tr><td colspan="3" class="muted">No affected transactions in this dataset.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h2>What should I do?</h2>
+  <p class="muted" style="font-size:13.5px">SERV turns the numbers above into a plain-language
+    brief and action plan - it never calculates a rupee figure itself; every number it uses is
+    checked against this dashboard's own computed results afterward.</p>
+  <button class="primary" onclick="explain()">Explain this &amp; suggest actions</button>
+  <div id="explain-out" style="margin-top:14px"></div>
+</div>
+
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <button class="close" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const SID = "{{ sid }}";
+
+function openModal(html) {
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+async function showTop(ruleId) {
+  const res = await fetch(`/api/top-transactions/${SID}/${ruleId}`);
+  const rows = await res.json();
+  let html = `<h3>Top transactions - rule ${ruleId}</h3><table><tr><th>ID</th><th>Date</th><th>Product</th><th>Amount</th><th>MDR</th></tr>`;
+  for (const r of rows) {
+    html += `<tr><td><a class="rowlink" onclick="showTrace('${r.transaction_id}')">${r.transaction_id}</a></td>
+      <td>${r.date}</td><td>${r.product}</td><td>₹${r.amount.toLocaleString('en-IN')}</td><td>₹${r.mdr.toLocaleString('en-IN')}</td></tr>`;
+  }
+  html += `</table>`;
+  openModal(html);
+}
+
+async function showTrace(txnId) {
+  const res = await fetch(`/api/trace/${SID}/${txnId}`);
+  const t = await res.json();
+  if (t.error) { openModal(`<p>${t.error}</p>`); return; }
+  const tx = t.transaction, rule = t.rule;
+  const html = `
+    <h3>Trace: ${tx.transaction_id}</h3>
+    <div class="kv">
+      <b>Date</b><span>${tx.date}</span>
+      <b>Product</b><span>${tx.product} (${tx.category})</span>
+      <b>Amount</b><span>₹${tx.amount.toLocaleString('en-IN')}</span>
+      <b>Payment</b><span>${tx.payment_method}</span>
+      <b>Status</b><span>${tx.status}</span>
+      <b>MDR</b><span>₹${tx.mdr.toLocaleString('en-IN')}</span>
+      <b>Rule</b><span>${tx.rule_id} - ${rule ? rule.name : ''}</span>
+      <b>Calculation</b><span>${tx.calc}</span>
+      <b>Reason</b><span>${tx.reason}</span>
+    </div>
+    ${rule ? `<p class="muted" style="font-size:13px">${rule.text}</p>` : ''}
+  `;
+  openModal(html);
+}
+
+async function explain() {
+  const out = document.getElementById('explain-out');
+  out.innerHTML = '<p class="muted">Calling SERV…</p>';
+  const res = await fetch(`/api/explain/${SID}`, { method: 'POST' });
+  const data = await res.json();
+  if (data.error) { out.innerHTML = `<p class="banner">${data.error}</p>`; return; }
+  let warn = '';
+  if (data.unverified_numbers && data.unverified_numbers.length) {
+    warn = `<p class="banner">Note: this explanation contained figures not found in the dashboard data
+      (${data.unverified_numbers.join(', ')}) - treat with caution.</p>`;
+  }
+  out.innerHTML = `<div class="stat">${data.text.replace(/\\n/g, '<br>')}</div>${warn}
+    ${data.cached ? '<p class="muted" style="font-size:12px">(cached response - no credits used)</p>' : ''}`;
+}
+</script>
+{% endblock %}

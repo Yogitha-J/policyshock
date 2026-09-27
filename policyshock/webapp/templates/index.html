@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h1>What will India's new UPI rule cost your business?</h1>
+  <p class="muted">From <b>15 Oct 2026</b>, eligible UPI merchant payments above ₹2,000 can attract a
+    0.4% fee, capped at ₹300 above ₹75,000. Small merchants and a few sectors are treated
+    differently. Upload your transactions and see exactly which ones are affected - and why.</p>
+
+  {% if error %}<p class="banner">{{ error }}</p>{% endif %}
+
+  <form method="post" action="{{ url_for('analyze') }}" enctype="multipart/form-data">
+    <h2 style="margin-top:22px">Try a sample business</h2>
+    <div class="grid cols-3">
+      {% for key, (label, _, _) in samples.items() %}
+      <label class="stat" style="cursor:pointer; display:block">
+        <input type="radio" name="sample" value="{{ key }}" {% if loop.first %}checked{% endif %} style="margin-right:8px">
+        <b>{{ label }}</b> <span class="muted">(synthetic data)</span>
+      </label>
+      {% endfor %}
+    </div>
+    <p style="margin-top:16px"><button class="primary" type="submit" name="mode" value="sample">Analyze sample</button></p>
+  </form>
+
+  <hr style="border:none;border-top:1px solid var(--line); margin:26px 0">
+
+  <form method="post" action="{{ url_for('analyze') }}" enctype="multipart/form-data">
+    <h2>Or upload your own transactions (CSV)</h2>
+    <p class="muted" style="font-size:13px">Just three things: your business category, whether you
+      qualify as a small merchant (P2PM), and the file. Column names don't need to match exactly - if your export uses headers like "Total_INR" or "tx_amount" instead of "amount", SERV maps
+      them automatically.</p>
+    <p><input type="file" name="csv_file" accept=".csv" required></p>
+    <div class="grid cols-2">
+      <label>Business category
+        <select name="sector" style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--line)">
+          {% for s in sectors %}<option value="{{ s }}">{{ s.replace('_',' ')|title }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>P2PM eligibility assumption: does your account qualify for small-merchant (P2PM)
+        treatment - i.e. do you receive UPI QR payments directly into your own account?
+        <select name="p2pm_eligible" style="width:100%; padding:8px; border-radius:8px; border:1px solid var(--line)">
+          <option value="no" selected>No</option>
+          <option value="yes">Yes</option>
+        </select>
+        <span class="muted" style="font-size:12px">This is a self-reported assumption used for
+          calculation only - it is not a legal or regulatory determination of your status.</span>
+      </label>
+    </div>
+    <p style="margin-top:16px"><button class="primary" type="submit">Analyze my transactions</button></p>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Policy rules loaded</h2>
+  <p class="muted" style="font-size:13px">
+    {{ rules.title }} · effective {{ rules.effective_date }} ·
+    verification status: <b>{{ rules.verification_status }}</b>
+  </p>
+  <p style="margin-top:10px"><a class="btn" href="{{ url_for('verify_rules_page') }}">See how SERV's role fits together →</a></p>
+</div>
+{% endblock %}
