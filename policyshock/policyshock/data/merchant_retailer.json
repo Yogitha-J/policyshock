@@ -1,0 +1,5 @@
+{
+  "name": "Sample retailer (synthetic data)",
+  "sector": "general_retail",
+  "qr_settles_directly_to_account": false
+}

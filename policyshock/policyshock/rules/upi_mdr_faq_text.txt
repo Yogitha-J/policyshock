@@ -1,0 +1,126 @@
+Merchant Discount Rate (MDR) on Select UPI (P2M) Transactions
+15th Sept. 2026
+FREQUENTLY ASKED QUESTIONS (FAQs)
+
+Section 1: Policy Objectives
+Q1. Why is this Merchant Discount Rate (MDR) being introduced now?
+Answer: UPI processes billions of transactions every month. The MDR is distributed only
+amongst the UPI ecosystem, to further invest into infrastructure resiliency, innovation,
+cybersecurity and customer service. The charges are kept very reasonable and will be
+applicable only for transactions above Rs 2,000 to ensure UPI remains the most affordable
+mode of accepting payments.
+Q2. Will small-value UPI transactions be impacted?
+Answer: There is no impact on small-value UPI transactions up to Rs 2,000, which comprise
+more than 95% of the total volume of UPI (P2M) transactions.
+Q3. What MDR is being introduced for merchants on UPI transactions?
+Answer: A MDR of 0.4% will be introduced on Person-to-Merchant (P2M) UPI transactions
+above Rs 2,000/-. For transactions of Rs 75,000/- and above, the MDR will be capped at
+Rs 300 per transaction.
+Q5. When do the updated MDR provisions take effect?
+Answer: The finalized MDR framework and threshold structure take effect from 15th October
+2026.
+
+Section 2: General Consumer
+Q15. Will ordinary consumers be charged for making payments via UPI?
+Answer: No, UPI services will continue without any cost to consumers.
+Q16. Is there any charge for UPI's Person-to-Person (P2P) transactions like sending money
+to friends, family, or personal contacts?
+Answer: No, P2P transactions will continue to be free-of-cost for both payer as well as
+beneficiary.
+Q18. Will consumer prices rise at stores if merchants start paying a nominal fee?
+Answer: No, market dynamics and historical payment trends show that merchants absorb
+nominal digital processing costs to drive higher business volume.
+Q22. Does the introduction of MDR affect auto-debit recurring payments like utility bills or
+OTT / Mutual Fund subscriptions?
+Answer: No, automated recurring standing instructions, known as UPI Mandates or AutoPay,
+do not carry prescribed MDR transaction charges. Payments set up using automated recurring
+transfers for monthly utility bills, OTT streaming subscriptions, all recurring investments etc.
+will not pay any prescribed MDR charge for the transaction.
+
+Section 3: Micro Merchants (P2PM) and Small Merchants
+Q23. Will small local vendors (P2PM) be charged MDR on UPI payments?
+Answer: No. Small merchants operating under the P2PM framework will continue with zero
+MDR. These are small vendors receiving up to Rs 1 lac per month through UPI QR directly
+into their accounts.
+Q24. What is the P2PM framework and how does it protect small merchants?
+Answer: The Person-to-Person-Merchant (P2PM) framework is a specialized account category
+created by NPCI to support small vendors receiving payments directly into their own personal
+bank accounts. Under P2PM guidelines, small merchants receiving up to Rs 1 lakh per month
+through UPI QR codes enjoy a mandatory zero-MDR.
+Q26. What happens if a small merchant receives a payment above Rs 2,000?
+Answer: MDR applicability is determined by overall merchant account categorisation.
+Receiving a payment above Rs 2,000 does not impose a charge on a small merchant operating
+under exempted tiers like P2PM.
+Q29. How will acquiring banks identify small merchants (P2PM) eligible for zero MDR?
+Answer: Acquiring banks and payment service providers use transaction velocity check for
+merchants acquired under the P2PM category to monitor the inward transaction threshold of
+Rs 1 lakh per month. Merchants with inward credit of UPI payment more than Rs 1 lakh per
+month, consecutively for 3 months, are formally transitioned under P2M category.
+Q30. Does zero MDR apply to QR code payments accepted in rural areas?
+Answer: Yes, zero MDR applies to QR code payments accepted by P2PM merchants in rural
+and semi-urban locations.
+
+Section 4: Large Merchants & E-Commerce Platforms
+Q31. What MDR is applicable for large commercial transactions?
+Answer: A nominal MDR of 0.4% will be introduced on Person-to-Merchant (P2M) UPI
+transactions above Rs 2,000/-. For transactions of Rs 75,000/- and above, the MDR will be
+capped at Rs 300 per transaction.
+Q32. Is there a maximum fee cap on very high-value UPI payments?
+Answer: Yes, to protect enterprise businesses handling large-value transactions, an absolute
+cap of Rs 300 per transaction for payments of Rs 75,000 and above has been instituted.
+Q33. Which specific categories qualify for a flat MDR instead of a percentage rate?
+Answer: For specific merchant categories such as railways, telecom services, insurance, and
+fuel, among others, a flat MDR of Rs 5 per transaction shall be applicable for transaction
+above Rs 2,000.
+Q34. Can enterprise merchants pass the MDR to buyers?
+Answer: No, merchants on-boarded cannot pass on MDR charges to customers while accepting
+payments through UPI.
+Q35. How is MDR calculated on exact transactions (e.g., Rs 5,000 vs Rs 1,00,000)?
+Answer: For a Rs 3,000 purchase, applying the 0.4% rate results in an MDR fee of Rs 12. For
+a Rs 50,000 purchase, a 0.4% fee equals Rs 200. However, for a high-value purchase of
+Rs 1,00,000, the 0.4% calculation (Rs 400) is superseded by the fixed maximum cap of Rs 300.
+Any transaction under Rs 2,000 incurs no MDR.
+Amount paid to Merchant | Applicable MDR | MDR paid by Merchant
+Rs 2,000 - Rs 0
+Rs 3,000 | 0.40% | Rs 12
+Rs 50,000 | 0.40% | Rs 200
+Rs 75,000 and above | Fixed Rs 300 | Rs 300
+Q36. Does MDR apply to transactions made via Credit Cards linked on UPI or Credit Lines?
+Answer: Credit-linked UPI payments, such as RuPay Credit Cards linked to UPI or
+pre-sanctioned bank credit lines, operate under separate credit product rules. The MDR
+discussed in this amendment apply specifically to direct users-account-to-merchant-account
+UPI transactions.
+
+Section 5: Capital Market transactions (Mutual Funds, Securities, Brokers & Dealers)
+Q37. What specific MDR rates and caps apply to Capital Market transactions via UPI?
+Answer: The Merchant Discount Rate (MDR) for Capital Market transactions, including
+payments towards Mutual Funds, Securities, Stockbrokers, and Dealers, is set at a nominal
+0.02% of the transaction value with a maximum capping of Rs 300.
+Q38. Which entities and transaction types are covered under this Capital Market MDR
+framework?
+Answer: This specific MDR tier explicitly covers all regulated entities operating within capital
+markets, including Asset Management Companies (Mutual Funds), SEBI-registered
+stockbrokers, securities dealers, and investment platforms. It applies to fund transfers
+executed via UPI for equity buying, debt market investments, mutual fund purchases, and
+broker wallet top-ups.
+
+Section 6: Specialized Sectors - Industry Program Merchants
+Q39. Are insurance premium payments eligible for special MDR concessions?
+Answer: Yes, insurance premium payments accepted via UPI qualify for specialised flat-rate
+concessions. For insurance premium payments exceeding Rs 2,000, a flat MDR of Rs 5 per
+transaction applies, rather than a percentage-based charge.
+Q40. How does MDR work for fuel purchases at petrol pumps via UPI?
+Answer: Fuel purchases made at petrol stations via UPI qualify for the flat concessional rate
+of Rs 5 for payments over Rs 2,000. For all fuel payments under Rs 2,000, the MDR remains
+at 0%.
+Q41. Will government utility bill collections (electricity, water) incur percentage MDR?
+Answer: Public utility payments such as electricity distribution, municipal water charges, and
+piped natural gas fall under designated Industry program category. For utility bill payments
+exceeding Rs 2,000, a flat concessional MDR of Rs 5 applies, rather than a 0.4% variable rate.
+Utility transactions under Rs 2,000 carry zero MDR.
+Q42. Are educational institutions exempt from standard MDR percentage fees?
+Answer: Educational fee collections, including school tuition, university term fees, and
+institutional entrance examinations, fall under designated Industry program category.
+Transactions above Rs 2,000 benefit from flat-fee structures or capped processing rates,
+preventing high percentage-based fees on large fee amounts. Educational transactions up to
+Rs 2,000 remain completely free of MDR.

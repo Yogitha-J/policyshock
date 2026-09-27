@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h1>How SERV's role fits together</h1>
+  <p class="muted">SERV's job here is extraction, mapping, and explanation - never the financial
+    math. The manually verified reference is the source of truth for every calculation, and a
+    deterministic rule engine (plain Python, no LLM) is what actually computes every rupee
+    figure on the dashboard. This page shows one link in that chain: SERV independently reading
+    the official FAQ and extracting the same parameters a human already verified by hand.</p>
+
+  <div class="workflow" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:16px; font-size:12.5px">
+    <span class="stat" style="padding:8px 12px">Policy document</span>
+    <span class="muted">→</span>
+    <span class="stat" style="padding:8px 12px; border-color:var(--accent); color:var(--accent-ink)">SERV extraction</span>
+    <span class="muted">→</span>
+    <span class="stat" style="padding:8px 12px">Verified parameters</span>
+    <span class="muted">→</span>
+    <span class="stat" style="padding:8px 12px">Deterministic rule engine</span>
+    <span class="muted">→</span>
+    <span class="stat" style="padding:8px 12px">Transaction impact</span>
+    <span class="muted">→</span>
+    <span class="stat" style="padding:8px 12px; border-color:var(--accent); color:var(--accent-ink)">SERV explanation</span>
+  </div>
+  <p class="muted" style="font-size:12px; margin-top:6px">The two SERV steps (blue) never touch
+    the arithmetic in between - they read text in, and turn results into prose out.</p>
+
+  <div class="grid cols-2" style="margin-top:18px">
+    <div>
+      <h2>Source text SERV reads</h2>
+      <div style="max-height:340px; overflow-y:auto; border:1px solid var(--line); border-radius:10px;
+                  padding:14px; font-size:12.5px; white-space:pre-wrap; background:#fafbfe">{{ faq_text }}</div>
+      <p class="muted" style="font-size:12px; margin-top:6px">NPCI's own FAQ PDF, 15 Sept 2026
+        (fetched from a mirror since the NPCI-hosted copy blocks automated access).</p>
+    </div>
+    <div>
+      <h2>Reference (hand-verified - source of truth)</h2>
+      <table>
+        <tr><th>Parameter</th><th>Value</th></tr>
+        {% for k, v in rules.parameters.items() %}
+        <tr><td>{{ k }}</td><td>{{ v }}</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+
+  <div id="run-area" style="margin-top:20px">
+    <button class="primary" onclick="runExtraction()">Run SERV extraction now</button>
+    <span class="muted" style="font-size:12.5px; margin-left:8px">Spends one SERV call - cached after the first run.</span>
+  </div>
+
+  <div id="result" style="margin-top:20px"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function runExtraction() {
+  const out = document.getElementById('result');
+  out.innerHTML = '<p class="muted">Asking SERV to read the FAQ and extract parameters…</p>';
+  const res = await fetch("{{ url_for('api_verify_rules') }}", { method: 'POST' });
+  const data = await res.json();
+  if (data.error) { out.innerHTML = `<p class="banner">${data.error}</p>`; return; }
+
+  let badge, badgeClass;
+  if (data.matches_reference) {
+    badge = '✓ SERV\'s extraction matches the manually verified reference exactly';
+    badgeClass = 'not_affected';
+  } else {
+    badge = `⚠ ${data.diffs.length} discrepanc${data.diffs.length === 1 ? 'y' : 'ies'} vs. the manually verified reference - reviewed below`;
+    badgeClass = 'unsupported';
+  }
+  let html = `<p><span class="pill ${badgeClass}" style="font-size:14px; padding:6px 14px">${badge}</span></p>
+    <p class="muted" style="font-size:12.5px">This check confirms SERV's reading of the policy text
+      against a human-verified reference - it does not certify or legally approve the policy itself,
+      and the reference (not SERV) remains what the calculator actually runs on.</p>`;
+
+  if (data.diffs && data.diffs.length) {
+    html += `<table style="margin-top:10px"><tr><th>Parameter</th><th>Reference</th><th>SERV extracted</th></tr>`;
+    for (const d of data.diffs) {
+      html += `<tr><td>${d.parameter}</td><td>${JSON.stringify(d.reference)}</td><td>${JSON.stringify(d.extracted)}</td></tr>`;
+    }
+    html += `</table>`;
+  }
+  html += `<details style="margin-top:14px"><summary class="muted" style="cursor:pointer">Raw SERV output</summary>
+    <pre style="white-space:pre-wrap; font-size:12px; background:#fafbfe; border:1px solid var(--line);
+                border-radius:8px; padding:12px; margin-top:8px">${data.raw}</pre></details>`;
+  if (data.cached) html += `<p class="muted" style="font-size:12px; margin-top:8px">(cached response - no credits used)</p>`;
+  out.innerHTML = html;
+}
+</script>
+{% endblock %}
