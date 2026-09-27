@@ -1,0 +1,5 @@
+{
+  "name": "Sample investment platform (synthetic data)",
+  "sector": "capital_markets",
+  "qr_settles_directly_to_account": false
+}

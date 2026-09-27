@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: policyshock
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --chdir . webapp.app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: SERV_BASE_URL
+        sync: false
+      - key: SERV_API_KEY
+        sync: false
+      - key: SERV_MODEL
+        sync: false
+      - key: FLASK_SECRET_KEY
+        generateValue: true
